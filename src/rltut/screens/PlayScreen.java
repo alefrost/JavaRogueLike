@@ -79,6 +79,8 @@ public class PlayScreen implements Screen {
         
         displayTiles(terminal, left, top);
         displayCreatures(terminal, left, top);
+        String stats = String.format(" %3d/%3d hp", player.hp(), player.maxHp());
+        terminal.write(stats, 1, 23);
     }
     
     public Screen respondToUserInput(KeyEvent key) {
