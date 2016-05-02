@@ -5,6 +5,8 @@
 package rltut.screens;
 
 import java.awt.event.KeyEvent;
+import java.util.List;
+import java.util.ArrayList;
 import asciiPanel.AsciiPanel;
 import rltut.WorldBuilder;
 import rltut.World;
@@ -20,10 +22,12 @@ public class PlayScreen implements Screen {
     private Creature player;
     private int screenWidth;
     private int screenHeight;
+    private List<String> messages;
     
     public PlayScreen() {
         screenWidth = 80;
         screenHeight = 21;
+        messages = new ArrayList<String>();
         createWorld();
         
         CreatureFactory creatureFactory = new CreatureFactory(world);
@@ -31,7 +35,7 @@ public class PlayScreen implements Screen {
     }
     
     private void createCreatures(CreatureFactory creatureFactory) {
-        player = creatureFactory.newPlayer();
+        player = creatureFactory.newPlayer(messages);
         
         for (int i=0; i< 8; i++) {
             creatureFactory.newFungus();
@@ -72,6 +76,13 @@ public class PlayScreen implements Screen {
         }
     }
     
+    private void displayMessages(AsciiPanel terminal, List<String> messages) {
+        int top = screenHeight - messages.size();
+        for (int i = 0; i < messages.size(); i++) {
+            terminal.writeCenter(messages.get(i), top + i);
+        }
+        messages.clear();
+    }
     /* INTERFACE IMPLEMENTATIONS */
     public void displayOutput(AsciiPanel terminal) {
         int left = getScrollX();
@@ -79,6 +90,7 @@ public class PlayScreen implements Screen {
         
         displayTiles(terminal, left, top);
         displayCreatures(terminal, left, top);
+        displayMessages(terminal,messages);
         String stats = String.format(" %3d/%3d hp", player.hp(), player.maxHp());
         terminal.write(stats, 1, 23);
     }
